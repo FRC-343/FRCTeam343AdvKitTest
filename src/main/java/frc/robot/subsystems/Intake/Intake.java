@@ -1,22 +1,10 @@
-// Copyright 2021-2024 FRC 6328
-// http://github.com/Mechanical-Advantage
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// version 3 as published by the Free Software Foundation or
-// available in the root directory of this project.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
-
 package frc.robot.subsystems.Intake;
 
 import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -29,6 +17,7 @@ public class Intake extends SubsystemBase {
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   private final SimpleMotorFeedforward ffModel;
   private final SysIdRoutine sysId;
+  private final DigitalInput NoteDetector = new DigitalInput(8);
 
   /** Creates a new Intake. */
   public Intake(IntakeIO io) {
@@ -66,6 +55,13 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Intake", inputs);
+    if (getNoteDetector() == false) {
+      stop();
+    }
+  }
+
+  public boolean getNoteDetector() {
+    return NoteDetector.get(); // false = note in intake
   }
 
   /** Run open loop at the specified voltage. */
@@ -80,6 +76,10 @@ public class Intake extends SubsystemBase {
 
     // Log Intake setpoint
     Logger.recordOutput("Intake/SetpointRPM", velocityRPM);
+  }
+
+  public boolean DetectedNote(boolean Noted) {
+    return getNoteDetector();
   }
 
   /** Stops the Intake. */

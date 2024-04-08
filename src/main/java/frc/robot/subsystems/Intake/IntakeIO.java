@@ -22,10 +22,13 @@ public interface IntakeIO {
     public double velocityRPS = 0.0;
     public double appliedVolts = 0.0;
     public double[] currentAmps = new double[] {};
+    public boolean DetectedNote;
   }
 
   /** Updates the set of loggable inputs. */
   public default void updateInputs(IntakeIOInputs inputs) {}
+
+  public default void DetectedNote(Boolean Noted) {}
 
   /** Run open loop at the specified voltage. */
   public default void setVoltage(double volts) {}
