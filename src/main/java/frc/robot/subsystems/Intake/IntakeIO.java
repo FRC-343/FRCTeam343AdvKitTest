@@ -31,7 +31,7 @@ public interface IntakeIO {
   public default void DetectedNote(Boolean Noted) {}
 
   /** Run open loop at the specified voltage. */
-  public default void setVoltage(double volts) {}
+  public default void setSpeed(double Speed) {}
 
   /** Run closed loop at the specified velocity. */
   public default void setVelocity(double velocityRPS, double ffVolts) {}

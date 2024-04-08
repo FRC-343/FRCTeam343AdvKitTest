@@ -62,8 +62,8 @@ public class IntakeIOSparkMax implements IntakeIO {
   }
 
   @Override
-  public void setVoltage(double volts) {
-    leader.setVoltage(volts);
+  public void setSpeed(double Speed) {
+    leader.set(Speed);
   }
 
   @Override

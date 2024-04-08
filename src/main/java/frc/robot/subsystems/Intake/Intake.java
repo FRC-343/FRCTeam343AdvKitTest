@@ -48,16 +48,16 @@ public class Intake extends SubsystemBase {
                 null,
                 null,
                 (state) -> Logger.recordOutput("Intake/SysIdState", state.toString())),
-            new SysIdRoutine.Mechanism((voltage) -> runVolts(voltage.in(Volts)), null, this));
+            new SysIdRoutine.Mechanism((voltage) -> runSpeed(voltage.in(Volts)), null, this));
   }
 
   @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Intake", inputs);
-    if (getNoteDetector() == false) {
-      stop();
-    }
+    // if (getNoteDetector() == false) {
+    //   stop();
+    // }
   }
 
   public boolean getNoteDetector() {
@@ -65,8 +65,8 @@ public class Intake extends SubsystemBase {
   }
 
   /** Run open loop at the specified voltage. */
-  public void runVolts(double volts) {
-    io.setVoltage(volts);
+  public void runSpeed(double Speed) {
+    io.setSpeed(Speed);
   }
 
   /** Run closed loop at the specified velocity. */

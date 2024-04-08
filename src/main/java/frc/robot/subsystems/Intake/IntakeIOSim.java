@@ -43,10 +43,10 @@ public class IntakeIOSim implements IntakeIO {
   }
 
   @Override
-  public void setVoltage(double volts) {
+  public void setSpeed(double Speed) {
     closedLoop = false;
-    appliedVolts = volts;
-    sim.setInputVoltage(volts);
+    appliedVolts = Speed;
+    sim.setInputVoltage(Speed);
   }
 
   @Override
@@ -58,7 +58,7 @@ public class IntakeIOSim implements IntakeIO {
 
   @Override
   public void stop() {
-    setVoltage(0.0);
+    setSpeed(0.0);
   }
 
   @Override
