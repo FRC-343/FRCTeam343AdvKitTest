@@ -29,36 +29,33 @@ public class IntakeIOSparkMax implements IntakeIO {
   private static final double GEAR_RATIO = 1;
 
   private final CANSparkMax leader = new CANSparkMax(16, MotorType.kBrushless);
-  private final CANSparkMax follower = new CANSparkMax(7, MotorType.kBrushless);
-  private final RelativeEncoder encoder = leader.getEncoder();
   private final SparkPIDController pid = leader.getPIDController();
 
   public IntakeIOSparkMax() {
     leader.restoreFactoryDefaults();
-    follower.restoreFactoryDefaults();
+
 
     leader.setCANTimeout(250);
-    follower.setCANTimeout(250);
+
 
     leader.setInverted(false);
-    follower.follow(leader, false);
+
 
     leader.enableVoltageCompensation(12.0);
     leader.setSmartCurrentLimit(30);
 
     leader.burnFlash();
-    follower.burnFlash();
 
-    encoder.setVelocityConversionFactor(0.01666);
+
+
   }
 
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
-    inputs.positionRad = Units.rotationsToRadians(encoder.getPosition() / GEAR_RATIO);
-    inputs.velocityRPS = encoder.getVelocity();
+
 
     inputs.appliedVolts = leader.getAppliedOutput() * leader.getBusVoltage();
-    inputs.currentAmps = new double[] {leader.getOutputCurrent(), follower.getOutputCurrent()};
+    inputs.currentAmps = new double[] {leader.getOutputCurrent()};
   }
 
   @Override

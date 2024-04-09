@@ -66,7 +66,13 @@ public class Intake extends SubsystemBase {
 
   /** Run open loop at the specified voltage. */
   public void runSpeed(double Speed) {
-    io.setSpeed(Speed);
+    if (getNoteDetector() == true) {
+      io.setSpeed(Speed);
+    }
+  }
+
+  public void runBypass(double speed) {
+    io.setSpeed(speed);
   }
 
   /** Run closed loop at the specified velocity. */

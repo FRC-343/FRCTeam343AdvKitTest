@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.IntakeCommand;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeIO;
 import frc.robot.subsystems.Intake.IntakeIOSim;
@@ -175,7 +174,12 @@ public class RobotContainer {
         .whileTrue(
             Commands.startEnd(
                 () -> flywheel.runVelocity(flywheelSpeedInput.get()), flywheel::stop, flywheel));
-    controller.rightBumper().whileTrue(new IntakeCommand());
+    controller
+        .rightBumper()
+        .whileTrue(Commands.startEnd(() -> intake.runSpeed(-10), intake::stop, intake));
+    controller
+        .leftBumper()
+        .whileTrue(Commands.startEnd(() -> intake.runBypass(-10), intake::stop, intake));
   }
 
   /**
