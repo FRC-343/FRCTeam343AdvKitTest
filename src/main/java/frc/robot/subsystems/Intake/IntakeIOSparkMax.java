@@ -16,10 +16,8 @@ package frc.robot.subsystems.Intake;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
-import edu.wpi.first.math.util.Units;
 
 /**
  * NOTE: To use the Spark Flex / NEO Vortex, replace all instances of "CANSparkMax" with
@@ -34,25 +32,18 @@ public class IntakeIOSparkMax implements IntakeIO {
   public IntakeIOSparkMax() {
     leader.restoreFactoryDefaults();
 
-
     leader.setCANTimeout(250);
 
-
     leader.setInverted(false);
-
 
     leader.enableVoltageCompensation(12.0);
     leader.setSmartCurrentLimit(30);
 
     leader.burnFlash();
-
-
-
   }
 
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
-
 
     inputs.appliedVolts = leader.getAppliedOutput() * leader.getBusVoltage();
     inputs.currentAmps = new double[] {leader.getOutputCurrent()};
