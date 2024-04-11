@@ -11,59 +11,47 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
-package frc.robot.subsystems.flywheel;
+package frc.robot.subsystems.Climber;
 
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
-import edu.wpi.first.math.util.Units;
 
 /**
  * NOTE: To use the Spark Flex / NEO Vortex, replace all instances of "CANSparkMax" with
  * "CANSparkFlex".
  */
-public class FlywheelIOSparkMax implements FlywheelIO {
+public class ClimberIOSparkMax implements ClimberIO {
   private static final double GEAR_RATIO = 1;
 
   private final CANSparkMax leader = new CANSparkMax(16, MotorType.kBrushless);
-  private final CANSparkMax follower = new CANSparkMax(7, MotorType.kBrushless);
-  private final RelativeEncoder encoder = leader.getEncoder();
   private final SparkPIDController pid = leader.getPIDController();
 
-  public FlywheelIOSparkMax() {
+  public ClimberIOSparkMax() {
     leader.restoreFactoryDefaults();
-    follower.restoreFactoryDefaults();
 
     leader.setCANTimeout(250);
-    follower.setCANTimeout(250);
 
     leader.setInverted(false);
-    follower.follow(leader, false);
 
     leader.enableVoltageCompensation(12.0);
     leader.setSmartCurrentLimit(30);
 
-    encoder.setVelocityConversionFactor(0.01666);
-
     leader.burnFlash();
-    follower.burnFlash();
   }
 
   @Override
-  public void updateInputs(FlywheelIOInputs inputs) {
-    inputs.positionRad = Units.rotationsToRadians(encoder.getPosition() / GEAR_RATIO);
-    inputs.velocityRPS = encoder.getVelocity();
+  public void updateInputs(ClimberIOInputs inputs) {
 
     inputs.appliedVolts = leader.getAppliedOutput() * leader.getBusVoltage();
-    inputs.currentAmps = new double[] {leader.getOutputCurrent(), follower.getOutputCurrent()};
+    inputs.currentAmps = new double[] {leader.getOutputCurrent()};
   }
 
   @Override
-  public void setVoltage(double volts) {
-    leader.setVoltage(volts);
+  public void setSpeed(double Speed) {
+    leader.set(Speed);
   }
 
   @Override
