@@ -58,7 +58,8 @@ public class Climber extends SubsystemBase {
   }
 
   public boolean getCimberBottom() {
-    return isBottom.get(); // false = note in intake
+    io.isBottom(isBottom.get());
+    return isBottom.get();
   }
 
   /** Run open loop at the specified voltage. */
