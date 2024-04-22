@@ -50,12 +50,13 @@ public class Climber extends SubsystemBase {
                 (state) -> Logger.recordOutput("Climber/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> runSpeed(voltage.in(Volts)), null, this));
   }
-
+//IMPORTANT CHANGE NEED TO BE MADE BELOW
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("Climber", inputs);
+    Logger.processInputs("Climber", inputs);// Remember to change this to the file name for future creations
   }
+//IMPORTANT CHANGE NEED TO BE MADE ABOVE
 
   public boolean getCimberBottom() {
     io.isBottom(isBottom.get());
