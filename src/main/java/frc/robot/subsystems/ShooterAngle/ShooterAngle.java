@@ -1,8 +1,7 @@
-package frc.robot.subsystems.Climber;
+package frc.robot.subsystems.ShooterAngle;
 
 import static edu.wpi.first.units.Units.*;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -13,15 +12,15 @@ import frc.robot.Constants;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Climber extends SubsystemBase {
-  private final ClimberIO io;
-  private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
+public class ShooterAngle extends SubsystemBase {
+  private final ShooterAngleIO io;
+  private final ShooterAngleIOInputsAutoLogged inputs = new ShooterAngleIOInputsAutoLogged();
   private final SimpleMotorFeedforward ffModel;
   private final SysIdRoutine sysId;
-  private final DigitalInput isBottom = new DigitalInput(6);
+  private final DigitalInput NoteDetector = new DigitalInput(8);
 
   /** Creates a new Intake. */
-  public Climber(ClimberIO io) {
+  public ShooterAngle(ShooterAngleIO io) {
     this.io = io;
 
     // Switch constants based on mode (the physics simulator is treated as a
@@ -48,37 +47,32 @@ public class Climber extends SubsystemBase {
                 null,
                 null,
                 null,
-                (state) -> Logger.recordOutput("Climber/SysIdState", state.toString())),
+                (state) -> Logger.recordOutput("Intake/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> runSpeed(voltage.in(Volts)), null, this));
   }
 
-  // IMPORTANT CHANGE NEED TO BE MADE BELOW
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs(
-        "Climber", inputs); // Remember to change this to the file name for future creations
-  }
-  // IMPORTANT CHANGE NEED TO BE MADE ABOVE
-
-  public boolean getCimberBottom() {
-    io.isBottom(isBottom.get());
-
-    return isBottom.get();
+    Logger.processInputs("ShooterAngle", inputs);
+    // if (getNoteDetector() == false) {
+    //   stop();
+    // }
   }
 
-  public double Encoder() {
-    return inputs.ClimberEncoder;
+  public boolean getNoteDetector() {
+    return NoteDetector.get(); // false = note in intake
   }
 
   /** Run open loop at the specified voltage. */
   public void runSpeed(double Speed) {
-    if (getCimberBottom() == true && Speed > 0.0) {
-      io.setSpeed(0.0);
-      io.resetEnc();
-    } else {
+    if (getNoteDetector() == true) {
       io.setSpeed(Speed);
     }
+  }
+
+  public void runBypass(double speed) {
+    io.setSpeed(speed);
   }
 
   /** Run closed loop at the specified velocity. */
@@ -87,7 +81,11 @@ public class Climber extends SubsystemBase {
     io.setVelocity(velocityRadPerSec, ffModel.calculate(velocityRadPerSec));
 
     // Log Intake setpoint
-    Logger.recordOutput("Climber/SetpointRPM", velocityRPM);
+    Logger.recordOutput("Intake/SetpointRPM", velocityRPM);
+  }
+
+  public boolean DetectedNote(boolean Noted) {
+    return getNoteDetector();
   }
 
   /** Stops the Intake. */
@@ -114,13 +112,5 @@ public class Climber extends SubsystemBase {
   /** Returns the current velocity in radians per second. */
   public double getCharacterizationVelocity() {
     return inputs.velocityRPS;
-  }
-
-  public void AutoClimb() {
-    double speed =
-        (Math.abs(Encoder()) + 35)
-            / 100.0; // equivilent to a PID (P only), goes proportionally slower the closer you are
-    speed = MathUtil.clamp(speed, .01, 1);
-    runSpeed(speed);
   }
 }
