@@ -26,6 +26,10 @@ public interface ClimberIO {
     public double ClimberEncoder = 0.0;
   }
 
+  public default double Encoder(double Position) {
+    return Position;
+  }
+
   /** Updates the set of loggable inputs. */
   public default void updateInputs(ClimberIOInputs inputs) {}
 

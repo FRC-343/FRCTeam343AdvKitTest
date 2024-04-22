@@ -50,27 +50,37 @@ public class Climber extends SubsystemBase {
                 (state) -> Logger.recordOutput("Climber/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> runSpeed(voltage.in(Volts)), null, this));
   }
-//IMPORTANT CHANGE NEED TO BE MADE BELOW
+  // IMPORTANT CHANGE NEED TO BE MADE BELOW
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("Climber", inputs);// Remember to change this to the file name for future creations
+    Logger.processInputs(
+        "Climber", inputs); // Remember to change this to the file name for future creations
   }
-//IMPORTANT CHANGE NEED TO BE MADE ABOVE
+  // IMPORTANT CHANGE NEED TO BE MADE ABOVE
 
   public boolean getCimberBottom() {
     io.isBottom(isBottom.get());
+
     return isBottom.get();
+  }
+
+  public double getEncoder() {
+    return 0.0;
+  }
+
+  public double Encoder() {
+    return inputs.ClimberEncoder;
   }
 
   /** Run open loop at the specified voltage. */
   public void runSpeed(double Speed) {
-    if (getCimberBottom() == true && Speed > 0.0) {
-      io.setSpeed(0.0);
-      io.resetEnc();
-    } else {
-      io.setSpeed(Speed);
-    }
+    // if (/*getCimberBottom() == t*/ Speed > 0.0) {
+    //   io.setSpeed(0.0);
+    //   io.resetEnc();
+    // } else {
+    io.setSpeed(Speed);
+    // }
   }
 
   /** Run closed loop at the specified velocity. */
@@ -80,10 +90,6 @@ public class Climber extends SubsystemBase {
 
     // Log Intake setpoint
     Logger.recordOutput("Climber/SetpointRPM", velocityRPM);
-  }
-
-  public boolean isBottom(boolean Bottom) {
-    return getCimberBottom();
   }
 
   /** Stops the Intake. */

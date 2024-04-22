@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.AutoClimb;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Climber.Climber;
 import frc.robot.subsystems.Climber.ClimberIO;
@@ -178,6 +179,7 @@ public class RobotContainer {
         .whileTrue(Commands.startEnd(() -> intake.runBypass(-10), intake::stop, intake));
     climber.setDefaultCommand(
         new RunCommand(() -> climber.runSpeed(OpController.getRightY() * 2), climber));
+    OpController.leftStick().whileTrue(new AutoClimb());
   }
 
   /**

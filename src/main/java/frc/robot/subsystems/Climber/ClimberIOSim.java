@@ -27,6 +27,7 @@ public class ClimberIOSim implements ClimberIO {
     inputs.velocityRPS = sim.getAngularVelocityRadPerSec();
     inputs.appliedVolts = appliedVolts;
     inputs.currentAmps = new double[] {sim.getCurrentDrawAmps()};
+    inputs.ClimberEncoder = sim.getAngularPositionRotations();
   }
 
   @Override
