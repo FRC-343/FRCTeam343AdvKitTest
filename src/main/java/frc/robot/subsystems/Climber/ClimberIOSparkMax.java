@@ -1,23 +1,12 @@
-// Copyright 2021-2024 FRC 6328
-// http://github.com/Mechanical-Advantage
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// version 3 as published by the Free Software Foundation or
-// available in the root directory of this project.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
-
 package frc.robot.subsystems.Climber;
 
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
+import com.revrobotics.SparkRelativeEncoder;
 
 /**
  * NOTE: To use the Spark Flex / NEO Vortex, replace all instances of "CANSparkMax" with
@@ -28,6 +17,8 @@ public class ClimberIOSparkMax implements ClimberIO {
 
   private final CANSparkMax leader = new CANSparkMax(16, MotorType.kBrushless);
   private final SparkPIDController pid = leader.getPIDController();
+  private final RelativeEncoder lEncoder =
+      leader.getEncoder(SparkRelativeEncoder.Type.kHallSensor, 42);
 
   public ClimberIOSparkMax() {
     leader.restoreFactoryDefaults();
@@ -47,6 +38,7 @@ public class ClimberIOSparkMax implements ClimberIO {
 
     inputs.appliedVolts = leader.getAppliedOutput() * leader.getBusVoltage();
     inputs.currentAmps = new double[] {leader.getOutputCurrent()};
+    inputs.ClimberEncoder = lEncoder.getPosition();
   }
 
   @Override
@@ -62,6 +54,11 @@ public class ClimberIOSparkMax implements ClimberIO {
   @Override
   public void stop() {
     leader.stopMotor();
+  }
+
+  @Override
+  public void resetEnc() {
+    lEncoder.setPosition(0);
   }
 
   @Override

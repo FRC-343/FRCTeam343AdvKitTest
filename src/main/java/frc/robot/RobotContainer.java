@@ -8,8 +8,13 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.Climber.Climber;
+import frc.robot.subsystems.Climber.ClimberIO;
+import frc.robot.subsystems.Climber.ClimberIOSim;
+import frc.robot.subsystems.Climber.ClimberIOSparkMax;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeIO;
 import frc.robot.subsystems.Intake.IntakeIOSim;
@@ -38,10 +43,11 @@ public class RobotContainer {
   private final Drive drive;
   private final Flywheel flywheel;
   private final Intake intake;
+  private final Climber climber;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
-
+  private final CommandXboxController OpController = new CommandXboxController(1);
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
   private final LoggedDashboardNumber flywheelSpeedInput =
@@ -61,6 +67,7 @@ public class RobotContainer {
                 new ModuleIOSparkMax(3));
         flywheel = new Flywheel(new FlywheelIOSparkMax());
         intake = new Intake(new IntakeIOSparkMax());
+        climber = new Climber(new ClimberIOSparkMax());
         // drive = new Drive(
         // new GyroIOPigeon2(true),
         // new ModuleIOTalonFX(0),
@@ -81,6 +88,7 @@ public class RobotContainer {
                 new ModuleIOSim());
         flywheel = new Flywheel(new FlywheelIOSim());
         intake = new Intake(new IntakeIOSim());
+        climber = new Climber(new ClimberIOSim());
         break;
 
       default:
@@ -94,6 +102,7 @@ public class RobotContainer {
                 new ModuleIO() {});
         flywheel = new Flywheel(new FlywheelIO() {});
         intake = new Intake(new IntakeIO() {});
+        climber = new Climber(new ClimberIO() {});
         break;
     }
 
@@ -167,6 +176,8 @@ public class RobotContainer {
     controller
         .leftBumper()
         .whileTrue(Commands.startEnd(() -> intake.runBypass(-10), intake::stop, intake));
+    climber.setDefaultCommand(
+        new RunCommand(() -> climber.runSpeed(OpController.getRightY() * 2), climber));
   }
 
   /**

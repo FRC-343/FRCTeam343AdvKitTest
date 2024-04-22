@@ -17,7 +17,7 @@ public class Climber extends SubsystemBase {
   private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
   private final SimpleMotorFeedforward ffModel;
   private final SysIdRoutine sysId;
-  private final DigitalInput NoteDetector = new DigitalInput(8);
+  private final DigitalInput isBottom = new DigitalInput(6);
 
   /** Creates a new Intake. */
   public Climber(ClimberIO io) {
@@ -47,7 +47,7 @@ public class Climber extends SubsystemBase {
                 null,
                 null,
                 null,
-                (state) -> Logger.recordOutput("Intake/SysIdState", state.toString())),
+                (state) -> Logger.recordOutput("Climber/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> runSpeed(voltage.in(Volts)), null, this));
   }
 
@@ -55,24 +55,20 @@ public class Climber extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Intake", inputs);
-    // if (getNoteDetector() == false) {
-    //   stop();
-    // }
   }
 
-  public boolean getNoteDetector() {
-    return NoteDetector.get(); // false = note in intake
+  public boolean getCimberBottom() {
+    return isBottom.get(); // false = note in intake
   }
 
   /** Run open loop at the specified voltage. */
   public void runSpeed(double Speed) {
-    if (getNoteDetector() == true) {
+    if (getCimberBottom() == true && Speed > 0.0) {
+      io.setSpeed(0.0);
+      io.resetEnc();
+    } else {
       io.setSpeed(Speed);
     }
-  }
-
-  public void runBypass(double speed) {
-    io.setSpeed(speed);
   }
 
   /** Run closed loop at the specified velocity. */
@@ -81,11 +77,11 @@ public class Climber extends SubsystemBase {
     io.setVelocity(velocityRadPerSec, ffModel.calculate(velocityRadPerSec));
 
     // Log Intake setpoint
-    Logger.recordOutput("Intake/SetpointRPM", velocityRPM);
+    Logger.recordOutput("Climber/SetpointRPM", velocityRPM);
   }
 
-  public boolean DetectedNote(boolean Noted) {
-    return getNoteDetector();
+  public boolean isBottom(boolean Bottom) {
+    return getCimberBottom();
   }
 
   /** Stops the Intake. */

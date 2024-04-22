@@ -22,13 +22,14 @@ public interface ClimberIO {
     public double velocityRPS = 0.0;
     public double appliedVolts = 0.0;
     public double[] currentAmps = new double[] {};
-    public boolean DetectedNote;
+    public boolean isBottom;
+    public double ClimberEncoder = 0.0;
   }
 
   /** Updates the set of loggable inputs. */
   public default void updateInputs(ClimberIOInputs inputs) {}
 
-  public default void DetectedNote(Boolean Noted) {}
+  public default void isBottom(Boolean Bottom) {}
 
   /** Run open loop at the specified voltage. */
   public default void setSpeed(double Speed) {}
@@ -38,6 +39,8 @@ public interface ClimberIO {
 
   /** Stop in open loop. */
   public default void stop() {}
+
+  public default void resetEnc() {}
 
   /** Set velocity PID constants. */
   public default void configurePID(double kP, double kI, double kD) {}
