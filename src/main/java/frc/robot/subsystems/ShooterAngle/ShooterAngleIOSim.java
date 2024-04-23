@@ -19,7 +19,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 public class ShooterAngleIOSim implements ShooterAngleIO {
-  private DCMotorSim sim = new DCMotorSim(DCMotor.getVex775Pro(1), 1.5, 0.004);
+  private DCMotorSim sim = new DCMotorSim(DCMotor.getRomiBuiltIn(1), 1.5, 0.004);
   private PIDController pid = new PIDController(0.0, 0.0, 0.0);
 
   private boolean closedLoop = false;

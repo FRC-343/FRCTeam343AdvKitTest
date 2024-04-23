@@ -17,7 +17,8 @@ public class ShooterAngle extends SubsystemBase {
   private final ShooterAngleIOInputsAutoLogged inputs = new ShooterAngleIOInputsAutoLogged();
   private final SimpleMotorFeedforward ffModel;
   private final SysIdRoutine sysId;
-  private final DigitalInput NoteDetector = new DigitalInput(8);
+  private final DigitalInput AngleBack = new DigitalInput(5);
+  private final DigitalInput AngleFront = new DigitalInput(4);
 
   /** Creates a new Intake. */
   public ShooterAngle(ShooterAngleIO io) {
@@ -41,39 +42,43 @@ public class ShooterAngle extends SubsystemBase {
     }
 
     // Configure SysId
-    sysId =
-        new SysIdRoutine(
-            new SysIdRoutine.Config(
-                null,
-                null,
-                null,
-                (state) -> Logger.recordOutput("Intake/SysIdState", state.toString())),
-            new SysIdRoutine.Mechanism((voltage) -> runSpeed(voltage.in(Volts)), null, this));
+    sysId = new SysIdRoutine(
+        new SysIdRoutine.Config(
+            null,
+            null,
+            null,
+            (state) -> Logger.recordOutput("Intake/SysIdState", state.toString())),
+        new SysIdRoutine.Mechanism((voltage) -> runSpeed(voltage.in(Volts)), null, this));
   }
 
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("ShooterAngle", inputs);
-    // if (getNoteDetector() == false) {
-    //   stop();
-    // }
+    Logger.processInputs("Angle", inputs);
+    io.AngleBack(getAngleBack());
+    io.AngleFront(getAngleFront());
   }
 
-  public boolean getNoteDetector() {
-    return NoteDetector.get(); // false = note in intake
+  public boolean getAngleBack() {
+    return AngleBack.get(); // false = note in intake
+  }
+
+  public boolean getAngleFront() {
+    return AngleFront.get(); // false = note in intake
   }
 
   /** Run open loop at the specified voltage. */
   public void runSpeed(double Speed) {
-    if (getNoteDetector() == true) {
+    if (getAngleBack() && Speed > 0.0) {
+      io.setSpeed(0);
+    } else if (getAngleFront() && Speed < 0.0) {
+      io.setSpeed(0);
+    } else {
       io.setSpeed(Speed);
     }
   }
 
-  public void runBypass(double speed) {
-    io.setSpeed(speed);
-  }
+
 
   /** Run closed loop at the specified velocity. */
   public void runVelocity(double velocityRPM) {
@@ -84,8 +89,8 @@ public class ShooterAngle extends SubsystemBase {
     Logger.recordOutput("Intake/SetpointRPM", velocityRPM);
   }
 
-  public boolean DetectedNote(boolean Noted) {
-    return getNoteDetector();
+  public boolean AngleBack(boolean Noted) {
+    return getAngleBack();
   }
 
   /** Stops the Intake. */
