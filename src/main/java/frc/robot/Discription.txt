@@ -1,0 +1,7 @@
+This file is an attempt to add more useability for in house teaching.
+It is likly to not recive updates during a build season and will instead hopefully be replace by more and better comments.
+
+
+This is team 343s Advantage kit test bed. As of the last test(Sometime in June 2024) on the current(2024 - Def Note) bot the drive was still unstable and no vision had been done.
+343 wants to move to using Advantage kit as it allows better feedback for after match digestion, and provides a semi-stable simulated bot to run test code(Mainly autos that would be deemed as "scary"[Watch 2023 matches of 343 autos most of these were deemed "Scary"]).
+

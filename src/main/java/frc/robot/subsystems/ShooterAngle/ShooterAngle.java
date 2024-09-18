@@ -42,13 +42,14 @@ public class ShooterAngle extends SubsystemBase {
     }
 
     // Configure SysId
-    sysId = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            null,
-            null,
-            null,
-            (state) -> Logger.recordOutput("Intake/SysIdState", state.toString())),
-        new SysIdRoutine.Mechanism((voltage) -> runSpeed(voltage.in(Volts)), null, this));
+    sysId =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                null,
+                null,
+                (state) -> Logger.recordOutput("Intake/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism((voltage) -> runSpeed(voltage.in(Volts)), null, this));
   }
 
   @Override
@@ -77,8 +78,6 @@ public class ShooterAngle extends SubsystemBase {
       io.setSpeed(Speed);
     }
   }
-
-
 
   /** Run closed loop at the specified velocity. */
   public void runVelocity(double velocityRPM) {

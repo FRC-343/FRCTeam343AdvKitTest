@@ -1,3 +1,5 @@
+/*This File is the IO(basically setting up the motor) for our climber */
+
 package frc.robot.subsystems.Climber;
 
 import com.revrobotics.CANSparkBase.ControlType;
